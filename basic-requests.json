@@ -1,0 +1,115 @@
+GET /temperatures/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET /temperatures/_search?size=3
+{
+"query": {
+"match_all": {
+}
+},
+"sort": {
+"celsius_value": {
+"order": "desc" }},
+"_source": ["city"]
+}
+
+GET /temperatures/_search?size=3
+{
+"query": {"match_all": {
+}
+},
+"sort": {
+"celsius_value": {"order": "asc"}},
+"_source": ["city"]
+}
+
+GET /temperatures/_search
+{
+"query": {"match": { "city": "zurich"}}
+}
+
+GET /temperatures/_search
+{
+"query": {"match_phrase": {"city": "San"}},
+"_source": ["city"]
+}
+
+GET /temperatures/_search
+{
+"query": {
+"bool": {
+"must": [
+{"match": {"city": "ITHACA_NY"}},
+{"match": {"celsius_value": "45.0"}}
+]
+}
+}
+}
+
+GET /temperatures/_search
+{
+"query": {
+"bool": {
+"must": [
+{"match": {"celsius_value": "44.0"}}
+],
+"must_not": [
+{"match": {"city": "ITHACA_NY"}}
+]
+}
+}
+}
+
+GET /temperatures/_search
+{
+"query": {
+"bool": {
+"must": [
+{"match": {"city": "paris"}}
+], "filter": {
+"range": {
+"celsius_value": {
+"gte": 20.0,
+"lte": 40.0
+}
+}
+}
+}
+},
+"_source": ["city"]
+}
+
+GET /temperatures/_search
+{
+"size": 0,
+"aggs": {
+"group_by_city": {
+"terms": {
+"field": "city.keyword"
+}
+}
+}
+}
+
+GET /temperatures/_search
+{
+"size": 0,
+"aggs": {
+"group_by_city": {
+"terms": {
+"field": "city.keyword"
+},
+"aggs": {
+"average_celsius_value": {
+"avg": {
+"field": "celsius_value"
+}
+}
+}
+}
+}
+}
